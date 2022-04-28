@@ -9,6 +9,7 @@ import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
 import '@fontsource/poppins/900.css';
 import type { AppProps } from 'next/app';
+import { useRouter } from 'next/router';
 import { FC } from 'react';
 
 import { WalletProvider } from '../contexts/Wallet';
@@ -38,23 +39,31 @@ const theme = extendTheme({
   },
 });
 
-const CRODex: FC<AppProps> = ({ Component, pageProps }) => (
-  <ApolloProvider
-    client={
-      new ApolloClient({
-        uri: 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql', // 'http://localhost:3001/dev/graphql',
-        cache: new InMemoryCache(),
-      })
-    }
-  >
-    <ChakraProvider theme={theme}>
-      <WalletProvider>
-        <Primary>
-          <Component {...pageProps} />
-        </Primary>
-      </WalletProvider>
-    </ChakraProvider>
-  </ApolloProvider>
-);
+const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
+  const router = useRouter();
+
+  if (router.asPath !== '/' && router.asPath.length > 0) {
+    router.replace(router.asPath);
+  }
+
+  return (
+    <ApolloProvider
+      client={
+        new ApolloClient({
+          uri: 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql', // 'http://localhost:3001/dev/graphql',
+          cache: new InMemoryCache(),
+        })
+      }
+    >
+      <ChakraProvider theme={theme}>
+        <WalletProvider>
+          <Primary>
+            <Component {...pageProps} />
+          </Primary>
+        </WalletProvider>
+      </ChakraProvider>
+    </ApolloProvider>
+  );
+};
 
 export default CRODex;
