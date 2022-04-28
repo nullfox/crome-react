@@ -22,12 +22,12 @@ export type Scalars = {
 /** Token pairs */
 export type Pair = {
   __typename?: 'Pair';
-  address?: Maybe<Scalars['String']>;
+  address: Scalars['String'];
   prices: Array<PairPrice>;
-  reserve0?: Maybe<Scalars['String']>;
-  reserve1?: Maybe<Scalars['String']>;
-  token0?: Maybe<Scalars['String']>;
-  token1?: Maybe<Scalars['String']>;
+  reserve0: Scalars['String'];
+  reserve1: Scalars['String'];
+  token0: Token;
+  token1: Token;
   transactions: Array<PairTransaction>;
 };
 
@@ -45,14 +45,14 @@ export type PairPrice = {
 /** Token pair transaction */
 export type PairTransaction = {
   __typename?: 'PairTransaction';
-  amountIn?: Maybe<Scalars['BigNumber']>;
-  amountOut?: Maybe<Scalars['BigNumber']>;
-  date?: Maybe<Scalars['DateTime']>;
-  hash?: Maybe<Scalars['String']>;
-  pair?: Maybe<Scalars['String']>;
-  sender?: Maybe<Scalars['String']>;
-  tokenIn?: Maybe<Scalars['String']>;
-  tokenOut?: Maybe<Scalars['String']>;
+  amountIn: Scalars['BigNumber'];
+  amountOut: Scalars['BigNumber'];
+  date: Scalars['DateTime'];
+  from: Scalars['String'];
+  hash: Scalars['String'];
+  pair: Scalars['String'];
+  tokenIn: Scalars['String'];
+  tokenOut: Scalars['String'];
 };
 
 export type Query = {
@@ -113,7 +113,7 @@ export type TokenQueryVariables = Exact<{
 }>;
 
 
-export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', address: string, name: string, symbol: string, decimals: number, totalSupply: any, wcroPer: any, usdcPer: any, basePair: { __typename?: 'Pair', address?: string | null, token0?: string | null, token1?: string | null, reserve0?: string | null, reserve1?: string | null, prices: Array<{ __typename?: 'PairPrice', open?: any | null, high?: any | null, low?: any | null, close?: any | null, date?: Date | null }>, transactions: Array<{ __typename?: 'PairTransaction', hash?: string | null, tokenIn?: string | null, tokenOut?: string | null, amountIn?: any | null, amountOut?: any | null, date?: Date | null }> } } | null };
+export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', address: string, name: string, symbol: string, decimals: number, totalSupply: any, wcroPer: any, usdcPer: any, basePair: { __typename?: 'Pair', address: string, reserve0: string, reserve1: string, token0: { __typename?: 'Token', address: string, symbol: string }, token1: { __typename?: 'Token', address: string, symbol: string }, prices: Array<{ __typename?: 'PairPrice', open?: any | null, high?: any | null, low?: any | null, close?: any | null, date?: Date | null }>, transactions: Array<{ __typename?: 'PairTransaction', hash: string, tokenIn: string, tokenOut: string, amountIn: any, amountOut: any, date: Date }> } } | null };
 
 export type WalletTokensQueryVariables = Exact<{
   address: Scalars['String'];
@@ -135,8 +135,14 @@ export const TokenDocument = gql`
     usdcPer
     basePair {
       address
-      token0
-      token1
+      token0 {
+        address
+        symbol
+      }
+      token1 {
+        address
+        symbol
+      }
       reserve0
       reserve1
       prices {

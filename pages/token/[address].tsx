@@ -198,7 +198,8 @@ const Token: NextPage = () => {
         )}
         <Box w="55%" px={6} pt={4}>
           <Heading size="md" fontWeight="500">
-            {token.name} ({token.symbol}/WCRO)
+            {token.name} ({token.basePair.token0.symbol}/
+            {token.basePair.token1.symbol})
           </Heading>
 
           <Box w="full" mt={4}>

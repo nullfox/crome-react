@@ -9,8 +9,14 @@ query Token($address: String!) {
     usdcPer
     basePair {
       address
-      token0
-      token1
+      token0 {
+        address
+        symbol
+      }
+      token1 {
+        address
+        symbol
+      }
       reserve0
       reserve1
       prices {
