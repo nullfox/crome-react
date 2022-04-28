@@ -345,6 +345,7 @@ const Token: NextPage = () => {
                 {walletTokenData.wallet.tokens.map((token, idx) => (
                   <Flex
                     key={token.address}
+                    data-token={token.address}
                     dir="row"
                     mt={idx === 0 ? 0 : 4}
                     fontSize="xs"
