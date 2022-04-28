@@ -1,0 +1,33 @@
+query Token($address: String!) {
+  token(address: $address) {
+    address
+    name
+    symbol
+    decimals
+    totalSupply
+    wcroPer
+    usdcPer
+    basePair {
+      address
+      token0
+      token1
+      reserve0
+      reserve1
+      prices {
+        open
+        high
+        low
+        close
+        date
+      }
+      transactions {
+        hash
+        tokenIn
+        tokenOut
+        amountIn
+        amountOut
+        date
+      }
+    }
+  }
+}

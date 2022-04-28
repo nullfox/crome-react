@@ -14,3 +14,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.apexcharts-tooltip-candlestick {
+  color: #222;
+}

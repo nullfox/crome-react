@@ -1,0 +1,15 @@
+overwrite: true
+schema: 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql'
+documents: 'queries/*.graphql'
+generates:
+  graphql/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      scalars:
+        DateTime: Date
+  graphql/graphql.schema.json:
+    plugins:
+      - 'introspection'

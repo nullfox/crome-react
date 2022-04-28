@@ -1,0 +1,13 @@
+query WalletTokens($address: String!) {
+  wallet(address: $address) {
+    tokens {
+      address
+      name
+      symbol
+      decimals
+      balance
+      usdcPer
+      usdcTotal
+    }
+  }
+}
