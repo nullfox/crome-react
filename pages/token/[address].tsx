@@ -355,7 +355,8 @@ const Token: NextPage = () => {
                     onClick={() =>
                       router.push(
                         `/token/${
-                          token.address.startsWith('0x0000')
+                          token.address ===
+                          '0x0000000000000000000000000000000000000000'
                             ? '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23'
                             : token.address
                         }`,
