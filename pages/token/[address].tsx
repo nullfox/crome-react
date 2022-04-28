@@ -352,7 +352,15 @@ const Token: NextPage = () => {
                       bg: 'rgba(255, 255, 255, 0.05)',
                       cursor: 'pointer',
                     }}
-                    onClick={() => router.push(`/token/${token.address}`)}
+                    onClick={() =>
+                      router.push(
+                        `/token/${
+                          token.address.startsWith('0x0000')
+                            ? '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23'
+                            : token.address
+                        }`,
+                      )
+                    }
                     p={2}
                     borderBottom="1px solid rgba(255, 255, 255, 0.25)"
                   >
