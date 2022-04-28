@@ -10,7 +10,7 @@ import '@fontsource/poppins/700.css';
 import '@fontsource/poppins/900.css';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 
 import { WalletProvider } from '../contexts/Wallet';
 import Primary from '../layouts/Primary';
@@ -42,9 +42,11 @@ const theme = extendTheme({
 const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
-  if (router.asPath !== '/' && router.asPath.length > 0) {
-    router.replace(router.asPath);
-  }
+  useEffect(() => {
+    if (router.asPath !== '/' && router.asPath.length > 0) {
+      router.replace(router.asPath);
+    }
+  }, []);
 
   return (
     <ApolloProvider
