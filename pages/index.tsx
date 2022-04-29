@@ -37,7 +37,7 @@ const Home: NextPage = () => {
           <ListItem
             key={token.address}
             _hover={{ cursor: 'pointer' }}
-            onClick={() => router.push(`/#!/token/${token.address}`)}
+            onClick={() => router.push(`/token/${token.address}`)}
           >
             <Box>{token.symbol}</Box>
             <Box>
