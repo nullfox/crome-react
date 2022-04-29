@@ -1,4 +1,9 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import '@fontsource/noto-sans/200.css';
 import '@fontsource/noto-sans/400.css';
@@ -8,9 +13,10 @@ import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
 import '@fontsource/poppins/900.css';
+import { LocalStorageWrapper, persistCache } from 'apollo3-cache-persist';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 
 import { WalletProvider } from '../contexts/Wallet';
 import Primary from '../layouts/Primary';
@@ -43,6 +49,9 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
   const [checkedRoute, setCheckedRoute] = useState(false);
+  const apolloClient = useRef<
+    ApolloClient<NormalizedCacheObject> | undefined
+  >();
 
   useEffect(() => {
     if (!checkedRoute) {
@@ -57,15 +66,28 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
     }
   }, [router.asPath, checkedRoute]);
 
-  return (
-    <ApolloProvider
-      client={
-        new ApolloClient({
+  useEffect(() => {
+    if (!apolloClient.current) {
+      const cache = new InMemoryCache();
+
+      persistCache({
+        cache,
+        storage: new LocalStorageWrapper(window.localStorage),
+      }).then(() => {
+        apolloClient.current = new ApolloClient({
           uri: 'https://api.dev.crome.app/v1/graphql', // 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
-          cache: new InMemoryCache(),
-        })
-      }
-    >
+          cache,
+        });
+      });
+    }
+  });
+
+  if (!apolloClient.current) {
+    return null;
+  }
+
+  return (
+    <ApolloProvider client={apolloClient.current}>
       <ChakraProvider theme={theme}>
         <WalletProvider>
           <Primary>
