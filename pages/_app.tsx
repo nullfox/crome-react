@@ -16,7 +16,7 @@ import '@fontsource/poppins/900.css';
 import { LocalStorageWrapper, persistCache } from 'apollo3-cache-persist';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { FC, useEffect, useRef } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { WalletProvider } from '../contexts/Wallet';
 import Primary from '../layouts/Primary';
@@ -48,7 +48,7 @@ const theme = extendTheme({
 const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
-  const apolloClient = useRef<
+  const [apolloClient, setApolloClient] = useState<
     ApolloClient<NormalizedCacheObject> | undefined
   >();
 
@@ -62,26 +62,30 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
     }
   }, [router.asPath]);
 
-  if (!apolloClient.current) {
-    const cache = new InMemoryCache();
+  useEffect(() => {
+    if (!apolloClient) {
+      const cache = new InMemoryCache();
 
-    persistCache({
-      cache,
-      storage: new LocalStorageWrapper(window.localStorage),
-    }).then(() => {
-      apolloClient.current = new ApolloClient({
-        uri: 'https://api.dev.crome.app/v1/graphql', // 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
-        cache: new InMemoryCache(),
+      persistCache({
+        cache,
+        storage: new LocalStorageWrapper(window.localStorage),
+      }).then(() => {
+        setApolloClient(
+          new ApolloClient({
+            uri: 'https://api.dev.crome.app/v1/graphql', // 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
+            cache: new InMemoryCache(),
+          }),
+        );
       });
-    });
-  }
+    }
+  }, [apolloClient]);
 
-  if (!apolloClient.current) {
+  if (!apolloClient) {
     return null;
   }
 
   return (
-    <ApolloProvider client={apolloClient.current}>
+    <ApolloProvider client={apolloClient}>
       <ChakraProvider theme={theme}>
         <WalletProvider>
           <Primary>
