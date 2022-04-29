@@ -42,20 +42,20 @@ const theme = extendTheme({
 const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
-  const [replacedRoute, setReplacedRoute] = useState(false);
+  const [checkedRoute, setCheckedRoute] = useState(false);
 
   useEffect(() => {
-    if (
-      router.asPath !== '/' &&
-      router.asPath.length > 0 &&
-      !router.asPath.includes('[') &&
-      !replacedRoute
-    ) {
-      console.log('==== Replacing route', router.asPath);
-      setReplacedRoute(true);
-      router.replace(router.asPath);
+    if (!checkedRoute) {
+      if (
+        router.asPath !== '/' &&
+        router.asPath.length > 0 &&
+        !router.asPath.includes('[')
+      ) {
+        setCheckedRoute(true);
+        router.replace(router.asPath);
+      }
     }
-  }, [router.asPath]);
+  }, [router.asPath, checkedRoute]);
 
   return (
     <ApolloProvider

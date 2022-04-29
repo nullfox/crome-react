@@ -38,15 +38,8 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 const Token: NextPage = () => {
   const router = useRouter();
   const [showLeft, setShowLeft] = useState(true);
-  const { currentAccount } = useWalletContext();
-  const [
-    getWalletTokens,
-    {
-      data: walletTokenData,
-      loading: walletTokenLoading,
-      refetch: refetchWalleTokens,
-    },
-  ] = useWalletTokensLazyQuery();
+  const { currentAccount, loadingWalletTokens, walletTokens } =
+    useWalletContext();
   const [
     getToken,
     { data: tokenData, loading: tokenLoading, refetch: refetchToken },
@@ -71,26 +64,10 @@ const Token: NextPage = () => {
           address: tokenAddress,
         });
       }
-
-      if (currentAccount) {
-        refetchWalleTokens({
-          address: currentAccount,
-        });
-      }
     }, 30000);
 
     return () => clearInterval(interval);
   }, [tokenAddress, currentAccount]);
-
-  useEffect(() => {
-    if (currentAccount && !walletTokenLoading) {
-      getWalletTokens({
-        variables: {
-          address: currentAccount,
-        },
-      });
-    }
-  }, [currentAccount, walletTokenLoading]);
 
   useEffect(() => {
     if (tokenAddress && !tokenLoading) {
@@ -341,9 +318,9 @@ const Token: NextPage = () => {
           </Flex>
 
           <Box mt={4}>
-            {!walletTokenLoading && walletTokenData && (
+            {!loadingWalletTokens && walletTokens.length > 0 && (
               <Box>
-                {walletTokenData.wallet.tokens.map((token, idx) => (
+                {walletTokens.map((token, idx) => (
                   <Flex
                     key={token.address}
                     data-token={token.address}

@@ -9,7 +9,13 @@ import React, {
   useState,
 } from 'react';
 
+import {
+  WalletTokensQuery,
+  useWalletTokensLazyQuery,
+} from '../graphql/graphql';
 import { connect, disconnect, getCachedProvider } from '../services/Wallet';
+
+type WalletToken = NonNullable<WalletTokensQuery['wallet']>['tokens'][0];
 
 export interface UserToken {
   address: string;
@@ -35,6 +41,9 @@ export interface Context {
   isConnected: boolean;
   currentAccount: string | undefined;
 
+  loadingWalletTokens: boolean;
+  walletTokens: WalletToken[];
+
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
 }
@@ -50,8 +59,12 @@ const WalletProvider: React.FC = ({ children }) => {
 
   const [ready, setReady] = useState(false);
   const [currentAccount, setCurrentAccount] = useState<string | undefined>();
+  const [loadingWalletTokens, setLoadingWalletTokens] = useState(false);
+  const [walletTokens, setWalletTokens] = useState<WalletToken[]>([]);
 
   const toast = useToast();
+
+  const [getWalletTokens] = useWalletTokensLazyQuery();
 
   useEffect(() => {
     const hasCachedProvider = !!getCachedProvider();
@@ -85,11 +98,22 @@ const WalletProvider: React.FC = ({ children }) => {
     setReady(true);
   }, [toast, ready]);
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (walletConnected.current && currentAccount) {
-      loadTokens();
+      setLoadingWalletTokens(true);
+
+      getWalletTokens({
+        variables: {
+          address: currentAccount,
+        },
+      }).then((result) => {
+        if (result.data) {
+          setLoadingWalletTokens(false);
+          setWalletTokens(result.data.wallet.tokens);
+        }
+      });
     }
-  }, [currentAccount]); */
+  }, [currentAccount]);
 
   const connectWallet = useCallback(async () => {
     if (!walletConnected.current) {
@@ -128,6 +152,9 @@ const WalletProvider: React.FC = ({ children }) => {
 
     isConnected: walletConnected.current,
     currentAccount,
+
+    loadingWalletTokens,
+    walletTokens,
 
     connect: connectWallet,
     disconnect: disconnectWallet,
