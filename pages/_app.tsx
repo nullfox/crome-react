@@ -56,7 +56,7 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
     <ApolloProvider
       client={
         new ApolloClient({
-          uri: 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
+          uri: 'https://api.dev.crome.app/v1/graphql', // 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
           cache: new InMemoryCache(),
         })
       }
