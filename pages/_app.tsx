@@ -62,7 +62,7 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
     }
   }, [router.asPath]);
 
-  useEffect(() => {
+  if (!apolloClient.current) {
     const cache = new InMemoryCache();
 
     persistCache({
@@ -74,7 +74,7 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
         cache: new InMemoryCache(),
       });
     });
-  }, []);
+  }
 
   if (!apolloClient.current) {
     return null;
