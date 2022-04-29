@@ -10,7 +10,7 @@ import '@fontsource/poppins/700.css';
 import '@fontsource/poppins/900.css';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { WalletProvider } from '../contexts/Wallet';
 import Primary from '../layouts/Primary';
@@ -42,12 +42,17 @@ const theme = extendTheme({
 const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
+  const [replacedRoute, setReplacedRoute] = useState(false);
+
   useEffect(() => {
     if (
       router.asPath !== '/' &&
       router.asPath.length > 0 &&
-      !router.asPath.includes('[')
+      !router.asPath.includes('[') &&
+      !replacedRoute
     ) {
+      console.log('==== Replacing route', router.asPath);
+      setReplacedRoute(true);
       router.replace(router.asPath);
     }
   }, [router.asPath]);
