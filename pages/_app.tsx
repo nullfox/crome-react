@@ -1,4 +1,9 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  NormalizedCacheObject,
+} from '@apollo/client';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import '@fontsource/noto-sans/200.css';
 import '@fontsource/noto-sans/400.css';
@@ -8,9 +13,10 @@ import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/600.css';
 import '@fontsource/poppins/700.css';
 import '@fontsource/poppins/900.css';
+import { LocalStorageWrapper, persistCache } from 'apollo3-cache-persist';
 import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useRef } from 'react';
 
 import { WalletProvider } from '../contexts/Wallet';
 import Primary from '../layouts/Primary';
@@ -42,6 +48,10 @@ const theme = extendTheme({
 const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
+  const apolloClient = useRef<
+    ApolloClient<NormalizedCacheObject> | undefined
+  >();
+
   useEffect(() => {
     if (
       router.asPath !== '/' &&
@@ -52,15 +62,26 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
     }
   }, [router.asPath]);
 
+  useEffect(() => {
+    const cache = new InMemoryCache();
+
+    persistCache({
+      cache,
+      storage: new LocalStorageWrapper(window.localStorage),
+    }).then(() => {
+      apolloClient.current = new ApolloClient({
+        uri: 'https://api.dev.crome.app/v1/graphql', // 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
+        cache: new InMemoryCache(),
+      });
+    });
+  }, []);
+
+  if (!apolloClient.current) {
+    return null;
+  }
+
   return (
-    <ApolloProvider
-      client={
-        new ApolloClient({
-          uri: 'https://api.dev.crome.app/v1/graphql', // 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
-          cache: new InMemoryCache(),
-        })
-      }
-    >
+    <ApolloProvider client={apolloClient.current}>
       <ChakraProvider theme={theme}>
         <WalletProvider>
           <Primary>
