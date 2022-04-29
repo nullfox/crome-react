@@ -48,7 +48,11 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
       router.asPath.length > 0 &&
       !router.asPath.includes('[')
     ) {
-      router.replace(router.asPath);
+      const cleanPath = (/#!(\/.*)$/.exec(router.asPath) || [])[1];
+
+      if (cleanPath) {
+        router.replace(cleanPath);
+      }
     }
   }, [router.asPath]);
 
