@@ -43,16 +43,20 @@ const CRODex: FC<AppProps> = ({ Component, pageProps }) => {
   const router = useRouter();
 
   useEffect(() => {
-    if (router.asPath !== '/' && router.asPath.length > 0) {
+    if (
+      router.asPath !== '/' &&
+      router.asPath.length > 0 &&
+      !router.asPath.includes('[')
+    ) {
       router.replace(router.asPath);
     }
-  }, []);
+  }, [router.asPath]);
 
   return (
     <ApolloProvider
       client={
         new ApolloClient({
-          uri: 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql', // 'http://localhost:3001/dev/graphql',
+          uri: 'https://dzv42xwcsi.execute-api.us-east-1.amazonaws.com/dev/graphql',
           cache: new InMemoryCache(),
         })
       }
