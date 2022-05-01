@@ -174,10 +174,24 @@ const Token: NextPage = () => {
           </Box>
         )}
         <Box w="55%" px={6} pt={4}>
-          <Heading size="md" fontWeight="500">
-            {token.name} ({token.basePair.token0.symbol}/
-            {token.basePair.token1.symbol})
-          </Heading>
+          <Flex dir="row" alignItems="center">
+            <Image src="/images/cronos.png" h={10} mr={4} />
+
+            <Box>
+              <Heading size="md" fontWeight="500">
+                {token.name} ({token.basePair.token0.symbol}/
+                {token.basePair.token1.symbol})
+              </Heading>
+
+              <Heading size="sm" fontWeight="500" mt={1}>
+                $
+                {(+ethers.utils.formatUnits(
+                  BigNumber.from(token.usdcPer),
+                  token.decimals,
+                )).toFixed(token.decimals)}
+              </Heading>
+            </Box>
+          </Flex>
 
           <Box w="full" mt={4}>
             <Chart
