@@ -9,25 +9,31 @@ import {
   Table,
   TableContainer,
   Tbody,
-  Td,
   Text,
   Th,
   Thead,
   Tr,
 } from '@chakra-ui/react';
-import { format } from 'date-fns';
 import { BigNumber, ethers } from 'ethers';
+import { orderBy } from 'lodash';
 import type { NextPage } from 'next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-import { BiInfoCircle, BiLinkExternal, BiWallet } from 'react-icons/bi';
-
-import { useWalletContext } from '../../contexts/Wallet';
 import {
-  useTokenLazyQuery,
-  useWalletTokensLazyQuery,
-} from '../../graphql/graphql';
+  BiInfoCircle,
+  BiLinkExternal,
+  BiSearch,
+  BiWallet,
+} from 'react-icons/bi';
+
+import Search from '../../components/TokenDetails/Search';
+import {
+  ADDRESS_CRO,
+  ADDRESS_WCRO,
+  useWalletContext,
+} from '../../contexts/Wallet';
+import { useTokenLazyQuery } from '../../graphql/graphql';
 
 // import Chart from 'react-apexcharts';
 
@@ -44,6 +50,8 @@ const Token: NextPage = () => {
     getToken,
     { data: tokenData, loading: tokenLoading, refetch: refetchToken },
   ] = useTokenLazyQuery();
+  /* const [searchToken, { data: searchTokenData, loading: searchTokenLoading }] =
+    useSearchTokenLazyQuery(); */
 
   const tokenAddress = useMemo(() => {
     const { address } = router.query;
@@ -166,7 +174,7 @@ const Token: NextPage = () => {
                   $
                   {(+ethers.utils.formatUnits(
                     BigNumber.from(token.usdcPer),
-                    token.decimals,
+                    6,
                   )).toFixed(6)}
                 </Text>
               </ListItem>
@@ -174,22 +182,42 @@ const Token: NextPage = () => {
           </Box>
         )}
         <Box w="55%" px={6} pt={4}>
-          <Flex dir="row" alignItems="center">
-            <Image src="/images/cronos.png" h={10} mr={4} />
+          <Flex dir="row" justifyContent="space-between">
+            <Flex dir="row" alignItems="center">
+              <Image src={token.iconUrl} h={10} mr={4} />
 
-            <Box>
-              <Heading size="md" fontWeight="500">
-                {token.name} ({token.basePair.token0.symbol}/
-                {token.basePair.token1.symbol})
-              </Heading>
+              <Box>
+                <Heading size="md" fontWeight="500">
+                  {token.name}{' '}
+                  {!!token.basePair &&
+                    `(${token.basePair!.token0.symbol}/${
+                      token.basePair!.token1.symbol
+                    })`}
+                </Heading>
 
-              <Heading size="sm" fontWeight="500" mt={1}>
-                $
-                {(+ethers.utils.formatUnits(
-                  BigNumber.from(token.usdcPer),
-                  token.decimals,
-                )).toFixed(token.decimals)}
-              </Heading>
+                <Heading size="sm" fontWeight="500" mt={1}>
+                  $
+                  {(+ethers.utils.formatUnits(
+                    BigNumber.from(token.usdcPer),
+                    6,
+                  )).toFixed(6)}
+                </Heading>
+              </Box>
+            </Flex>
+
+            <Box w="30%">
+              {/* <Search
+                onSearch={(text) => router.replace(`/token/${text}`)}
+                isLoading={searchTokenLoading}
+                onTextUpdate={async (text) =>
+                  searchToken({ variables: { text } }).then((result) =>
+                    result.data!.searchToken.map((result) => ({
+                      label: result.name,
+                      value: result.address,
+                    })),
+                  )
+                }
+              /> */}
             </Box>
           </Flex>
 
@@ -199,6 +227,9 @@ const Token: NextPage = () => {
               options={{
                 chart: {
                   id: 'price',
+                  toolbar: {
+                    show: false,
+                  },
                 },
                 xaxis: {
                   type: 'datetime',
@@ -221,7 +252,10 @@ const Token: NextPage = () => {
               }}
               series={[
                 {
-                  data: token.basePair.prices.map((price) => ({
+                  data: (token.basePair
+                    ? token.basePair
+                    : { prices: [] }
+                  ).prices.map((price) => ({
                     x: price.date,
                     y: [
                       parseFloat(
@@ -270,7 +304,7 @@ const Token: NextPage = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {token.basePair.transactions.map((tx) => (
+                  {/* {token.basePair.transactions.map((tx) => (
                     <Tr key={tx.hash}>
                       <Td>
                         {token.address.toLowerCase() ===
@@ -306,7 +340,7 @@ const Token: NextPage = () => {
                         </a>
                       </Td>
                     </Tr>
-                  ))}
+                  ))} */}
                 </Tbody>
               </Table>
             </TableContainer>
@@ -334,7 +368,11 @@ const Token: NextPage = () => {
           <Box mt={4}>
             {!loadingWalletTokens && walletTokens.length > 0 && (
               <Box>
-                {walletTokens.map((token, idx) => (
+                {orderBy(
+                  walletTokens,
+                  (token) => parseInt(token.usdcTotal, 10),
+                  ['desc'],
+                ).map((token, idx) => (
                   <Flex
                     key={token.address}
                     data-token={token.address}
@@ -348,9 +386,8 @@ const Token: NextPage = () => {
                     onClick={() =>
                       router.push(
                         `/token/${
-                          token.address ===
-                          '0x0000000000000000000000000000000000000000'
-                            ? '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23'
+                          token.address === ADDRESS_CRO
+                            ? ADDRESS_WCRO
                             : token.address
                         }`,
                       )
@@ -366,7 +403,7 @@ const Token: NextPage = () => {
                         $
                         {(+ethers.utils.formatUnits(
                           token.usdcTotal,
-                          token.decimals,
+                          6,
                         )).toFixed(2)}
                       </Text>
                       <Text>

@@ -19,46 +19,33 @@ export type Scalars = {
   DateTime: Date;
 };
 
-/** Token pairs */
+/** Crypto token pair */
 export type Pair = {
   __typename?: 'Pair';
   address: Scalars['String'];
+  dependentToken: Token;
   prices: Array<PairPrice>;
   reserve0: Scalars['String'];
   reserve1: Scalars['String'];
   token0: Token;
   token1: Token;
-  transactions: Array<PairTransaction>;
+  wcroPrice: Scalars['BigNumber'];
 };
 
-/** Token pair price */
+/** Crypto token pair price */
 export type PairPrice = {
   __typename?: 'PairPrice';
-  address?: Maybe<Scalars['String']>;
-  close?: Maybe<Scalars['BigNumber']>;
-  date?: Maybe<Scalars['DateTime']>;
-  high?: Maybe<Scalars['BigNumber']>;
-  low?: Maybe<Scalars['BigNumber']>;
-  open?: Maybe<Scalars['BigNumber']>;
-};
-
-/** Token pair transaction */
-export type PairTransaction = {
-  __typename?: 'PairTransaction';
-  amountIn: Scalars['BigNumber'];
-  amountOut: Scalars['BigNumber'];
+  close: Scalars['BigNumber'];
   date: Scalars['DateTime'];
-  from: Scalars['String'];
-  hash: Scalars['String'];
-  pair: Scalars['String'];
-  tokenIn: Scalars['String'];
-  tokenOut: Scalars['String'];
+  high: Scalars['BigNumber'];
+  low: Scalars['BigNumber'];
+  open: Scalars['BigNumber'];
 };
 
 export type Query = {
   __typename?: 'Query';
   token?: Maybe<Token>;
-  wallet: Wallet;
+  wallet?: Maybe<Wallet>;
 };
 
 
@@ -75,9 +62,10 @@ export type QueryWalletArgs = {
 export type Token = {
   __typename?: 'Token';
   address: Scalars['String'];
-  basePair: Pair;
+  basePair?: Maybe<Pair>;
   decimals: Scalars['Int'];
-  marketCap: Scalars['BigNumber'];
+  iconUrl: Scalars['BigNumber'];
+  isDead: Scalars['Boolean'];
   name: Scalars['String'];
   symbol: Scalars['String'];
   totalSupply: Scalars['BigNumber'];
@@ -85,10 +73,10 @@ export type Token = {
   wcroPer: Scalars['BigNumber'];
 };
 
-/** Wallet containing tokens */
+/** Crypto wallet */
 export type Wallet = {
   __typename?: 'Wallet';
-  address?: Maybe<Scalars['String']>;
+  address: Scalars['String'];
   tokens: Array<WalletToken>;
 };
 
@@ -97,9 +85,10 @@ export type WalletToken = {
   __typename?: 'WalletToken';
   address: Scalars['String'];
   balance?: Maybe<Scalars['BigNumber']>;
-  basePair: Pair;
+  basePair?: Maybe<Pair>;
   decimals: Scalars['Int'];
-  marketCap: Scalars['BigNumber'];
+  iconUrl: Scalars['BigNumber'];
+  isDead: Scalars['Boolean'];
   name: Scalars['String'];
   symbol: Scalars['String'];
   totalSupply: Scalars['BigNumber'];
@@ -113,14 +102,14 @@ export type TokenQueryVariables = Exact<{
 }>;
 
 
-export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', address: string, name: string, symbol: string, decimals: number, totalSupply: any, wcroPer: any, usdcPer: any, basePair: { __typename?: 'Pair', address: string, reserve0: string, reserve1: string, token0: { __typename?: 'Token', address: string, symbol: string }, token1: { __typename?: 'Token', address: string, symbol: string }, prices: Array<{ __typename?: 'PairPrice', open?: any | null, high?: any | null, low?: any | null, close?: any | null, date?: Date | null }>, transactions: Array<{ __typename?: 'PairTransaction', hash: string, tokenIn: string, tokenOut: string, amountIn: any, amountOut: any, date: Date }> } } | null };
+export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', address: string, name: string, symbol: string, decimals: number, totalSupply: any, wcroPer: any, usdcPer: any, iconUrl: any, basePair?: { __typename?: 'Pair', address: string, reserve0: string, reserve1: string, token0: { __typename?: 'Token', address: string, symbol: string }, token1: { __typename?: 'Token', address: string, symbol: string }, dependentToken: { __typename?: 'Token', address: string, symbol: string }, prices: Array<{ __typename?: 'PairPrice', open: any, high: any, low: any, close: any, date: Date }> } | null } | null };
 
 export type WalletTokensQueryVariables = Exact<{
   address: Scalars['String'];
 }>;
 
 
-export type WalletTokensQuery = { __typename?: 'Query', wallet: { __typename?: 'Wallet', tokens: Array<{ __typename?: 'WalletToken', address: string, name: string, symbol: string, decimals: number, balance?: any | null, usdcPer: any, usdcTotal: any }> } };
+export type WalletTokensQuery = { __typename?: 'Query', wallet?: { __typename?: 'Wallet', tokens: Array<{ __typename?: 'WalletToken', address: string, name: string, symbol: string, decimals: number, balance?: any | null, wcroPer: any, usdcPer: any, usdcTotal: any }> } | null };
 
 
 export const TokenDocument = gql`
@@ -133,6 +122,7 @@ export const TokenDocument = gql`
     totalSupply
     wcroPer
     usdcPer
+    iconUrl
     basePair {
       address
       token0 {
@@ -143,6 +133,10 @@ export const TokenDocument = gql`
         address
         symbol
       }
+      dependentToken {
+        address
+        symbol
+      }
       reserve0
       reserve1
       prices {
@@ -150,14 +144,6 @@ export const TokenDocument = gql`
         high
         low
         close
-        date
-      }
-      transactions {
-        hash
-        tokenIn
-        tokenOut
-        amountIn
-        amountOut
         date
       }
     }
@@ -201,6 +187,7 @@ export const WalletTokensDocument = gql`
       symbol
       decimals
       balance
+      wcroPer
       usdcPer
       usdcTotal
     }

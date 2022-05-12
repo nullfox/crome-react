@@ -2,29 +2,15 @@ import { Box, Flex, Heading, List, ListItem, Text } from '@chakra-ui/react';
 import { ethers } from 'ethers';
 import type { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 
 import { useWalletContext } from '../contexts/Wallet';
-import { useWalletTokensLazyQuery } from '../graphql/graphql';
 
 const Home: NextPage = () => {
   const router = useRouter();
 
-  const { currentAccount } = useWalletContext();
+  const { loadingWalletTokens, walletTokens } = useWalletContext();
 
-  const [getTokens, { data, loading }] = useWalletTokensLazyQuery();
-
-  useEffect(() => {
-    if (currentAccount) {
-      getTokens({
-        variables: {
-          address: currentAccount,
-        },
-      });
-    }
-  }, [currentAccount]);
-
-  if (!data || loading) {
+  if (!walletTokens || loadingWalletTokens) {
     return null;
   }
 
@@ -33,7 +19,7 @@ const Home: NextPage = () => {
       <Heading textAlign="center">My Tokens</Heading>
 
       <List pt={6}>
-        {data.wallet.tokens.map((token) => (
+        {walletTokens.map((token) => (
           <ListItem
             key={token.address}
             _hover={{ cursor: 'pointer' }}
@@ -42,11 +28,7 @@ const Home: NextPage = () => {
             <Box>{token.symbol}</Box>
             <Box>
               <Text fontWeight="600">
-                $
-                {(+ethers.utils.formatUnits(
-                  token.usdcTotal,
-                  token.decimals,
-                )).toFixed(2)}
+                ${(+ethers.utils.formatUnits(token.usdcTotal, 6)).toFixed(2)}
               </Text>
               <Text>
                 {(+ethers.utils.formatUnits(

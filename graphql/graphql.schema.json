@@ -49,7 +49,7 @@
       {
         "kind": "OBJECT",
         "name": "Pair",
-        "description": "Token pairs",
+        "description": "Crypto token pair",
         "fields": [
           {
             "name": "address",
@@ -61,6 +61,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "dependentToken",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Token",
                 "ofType": null
               }
             },
@@ -156,24 +172,16 @@
             "deprecationReason": null
           },
           {
-            "name": "transactions",
+            "name": "wcroPrice",
             "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "LIST",
-                "name": null,
-                "ofType": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "OBJECT",
-                    "name": "PairTransaction",
-                    "ofType": null
-                  }
-                }
+                "kind": "SCALAR",
+                "name": "BigNumber",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -188,109 +196,10 @@
       {
         "kind": "OBJECT",
         "name": "PairPrice",
-        "description": "Token pair price",
+        "description": "Crypto token pair price",
         "fields": [
-          {
-            "name": "address",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "close",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigNumber",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "date",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "high",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigNumber",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "low",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigNumber",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "open",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "BigNumber",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "inputFields": null,
-        "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "OBJECT",
-        "name": "PairTransaction",
-        "description": "Token pair transaction",
-        "fields": [
-          {
-            "name": "amountIn",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "BigNumber",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "amountOut",
             "description": null,
             "args": [],
             "type": {
@@ -322,7 +231,7 @@
             "deprecationReason": null
           },
           {
-            "name": "from",
+            "name": "high",
             "description": null,
             "args": [],
             "type": {
@@ -330,7 +239,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "BigNumber",
                 "ofType": null
               }
             },
@@ -338,7 +247,7 @@
             "deprecationReason": null
           },
           {
-            "name": "hash",
+            "name": "low",
             "description": null,
             "args": [],
             "type": {
@@ -346,7 +255,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
+                "name": "BigNumber",
                 "ofType": null
               }
             },
@@ -354,7 +263,7 @@
             "deprecationReason": null
           },
           {
-            "name": "pair",
+            "name": "open",
             "description": null,
             "args": [],
             "type": {
@@ -362,39 +271,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "tokenIn",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "tokenOut",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
+                "name": "BigNumber",
                 "ofType": null
               }
             },
@@ -463,13 +340,9 @@
               }
             ],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Wallet",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Wallet",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -516,13 +389,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Pair",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Pair",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -544,7 +413,7 @@
             "deprecationReason": null
           },
           {
-            "name": "marketCap",
+            "name": "iconUrl",
             "description": null,
             "args": [],
             "type": {
@@ -553,6 +422,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "BigNumber",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "isDead",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               }
             },
@@ -648,16 +533,20 @@
       {
         "kind": "OBJECT",
         "name": "Wallet",
-        "description": "Wallet containing tokens",
+        "description": "Crypto wallet",
         "fields": [
           {
             "name": "address",
             "description": null,
             "args": [],
             "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -730,13 +619,9 @@
             "description": null,
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "Pair",
-                "ofType": null
-              }
+              "kind": "OBJECT",
+              "name": "Pair",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -758,7 +643,7 @@
             "deprecationReason": null
           },
           {
-            "name": "marketCap",
+            "name": "iconUrl",
             "description": null,
             "args": [],
             "type": {
@@ -767,6 +652,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "BigNumber",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "isDead",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               }
             },

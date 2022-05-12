@@ -15,24 +15,7 @@ import {
 } from '../graphql/graphql';
 import { connect, disconnect, getCachedProvider } from '../services/Wallet';
 
-type WalletToken = NonNullable<WalletTokensQuery['wallet']>['tokens'][0];
-
-export interface UserToken {
-  address: string;
-  name: string;
-  symbol: string;
-  decimals: number;
-  quantity: BigNumber;
-  usdcPer: BigNumber;
-  usdcTotal: BigNumber;
-}
-
-export enum TokenState {
-  NOT_LOADED,
-  LOADING,
-  LOADED,
-  LOAD_FAILED,
-}
+export type WalletToken = NonNullable<WalletTokensQuery['wallet']>['tokens'][0];
 
 export interface Context {
   ready: boolean;
@@ -48,9 +31,8 @@ export interface Context {
   disconnect: () => Promise<void>;
 }
 
-/* class WalletError extends Error {
-  code?: number;
-} */
+export const ADDRESS_CRO = '0x0000000000000000000000000000000000000000';
+export const ADDRESS_WCRO = '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23';
 
 const WalletContext = createContext({});
 
@@ -109,7 +91,7 @@ const WalletProvider: React.FC = ({ children }) => {
       }).then((result) => {
         if (result.data) {
           setLoadingWalletTokens(false);
-          setWalletTokens(result.data.wallet.tokens);
+          setWalletTokens((result.data.wallet || { tokens: [] }).tokens);
         }
       });
     }

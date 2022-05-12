@@ -6,6 +6,7 @@ query WalletTokens($address: String!) {
       symbol
       decimals
       balance
+      wcroPer
       usdcPer
       usdcTotal
     }
