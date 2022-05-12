@@ -21,6 +21,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import {
+  BiCopyAlt,
   BiInfoCircle,
   BiLinkExternal,
   BiSearch,
@@ -140,11 +141,14 @@ const Token: NextPage = () => {
                 <Text fontWeight="600">{token.decimals.toString()}</Text>
               </ListItem>
               <ListItem>
-                Contract:{' '}
+                Address:{' '}
                 <a
-                  href={`https://cronoscan.com/address/${token.address}`}
-                  target="_blank"
-                  rel="noreferrer"
+                  href="#"
+                  onClick={(event) => {
+                    event.preventDefault();
+
+                    navigator.clipboard.writeText(token.address);
+                  }}
                 >
                   <Text fontWeight="600">
                     {token.address.slice(0, 14)}...
@@ -154,7 +158,7 @@ const Token: NextPage = () => {
                       top={1}
                       boxSize={5}
                       display="inline"
-                      as={BiLinkExternal}
+                      as={BiCopyAlt}
                     />
                   </Text>
                 </a>
@@ -177,6 +181,66 @@ const Token: NextPage = () => {
                     6,
                   )).toFixed(6)}
                 </Text>
+              </ListItem>
+              <ListItem>
+                Links:{' '}
+                <Box>
+                  <a
+                    href={`https://cronoscan.com/token/${token.address}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Text fontWeight="600">
+                      {token.symbol} Transactions
+                      <Icon
+                        pl={1}
+                        pos="relative"
+                        top={1}
+                        boxSize={5}
+                        display="inline"
+                        as={BiLinkExternal}
+                      />
+                    </Text>
+                  </a>
+                </Box>
+                <Box>
+                  <a
+                    href={`https://cronoscan.com/address/${token.address}#code`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Text fontWeight="600">
+                      {token.symbol} Contract
+                      <Icon
+                        pl={1}
+                        pos="relative"
+                        top={1}
+                        boxSize={5}
+                        display="inline"
+                        as={BiLinkExternal}
+                      />
+                    </Text>
+                  </a>
+                </Box>
+                <Box>
+                  <a
+                    href={`https://cronoscan.com/token/${token.address}#balances`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Text fontWeight="600">
+                      {token.symbol} Holders
+                      <Icon
+                        pl={1}
+                        pos="relative"
+                        top={1}
+                        boxSize={5}
+                        display="inline"
+                        as={BiLinkExternal}
+                      />
+                    </Text>
+                  </a>
+                </Box>
               </ListItem>
             </List>
           </Box>
