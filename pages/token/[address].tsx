@@ -72,7 +72,7 @@ const Token: NextPage = () => {
           address: tokenAddress,
         });
       }
-    }, 30000);
+    }, 180000);
 
     return () => clearInterval(interval);
   }, [tokenAddress, currentAccount]);
