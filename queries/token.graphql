@@ -31,6 +31,15 @@ query Token($address: String!) {
         close
         date
       }
+      transactions {
+        hash
+        from
+        tokenIn
+        tokenOut
+        amountIn
+        amountOut
+        date
+      }
     }
   }
 }

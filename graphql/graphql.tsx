@@ -29,6 +29,7 @@ export type Pair = {
   reserve1: Scalars['String'];
   token0: Token;
   token1: Token;
+  transactions: Array<PairTransaction>;
   wcroPrice: Scalars['BigNumber'];
 };
 
@@ -40,6 +41,18 @@ export type PairPrice = {
   high: Scalars['BigNumber'];
   low: Scalars['BigNumber'];
   open: Scalars['BigNumber'];
+};
+
+/** Crypto token pair buy or sell transaction */
+export type PairTransaction = {
+  __typename?: 'PairTransaction';
+  amountIn: Scalars['String'];
+  amountOut: Scalars['String'];
+  date: Scalars['DateTime'];
+  from: Scalars['String'];
+  hash: Scalars['String'];
+  tokenIn: Scalars['String'];
+  tokenOut: Scalars['String'];
 };
 
 export type Query = {
@@ -102,7 +115,7 @@ export type TokenQueryVariables = Exact<{
 }>;
 
 
-export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', address: string, name: string, symbol: string, decimals: number, totalSupply: any, wcroPer: any, usdcPer: any, iconUrl: any, basePair?: { __typename?: 'Pair', address: string, reserve0: string, reserve1: string, token0: { __typename?: 'Token', address: string, symbol: string }, token1: { __typename?: 'Token', address: string, symbol: string }, dependentToken: { __typename?: 'Token', address: string, symbol: string }, prices: Array<{ __typename?: 'PairPrice', open: any, high: any, low: any, close: any, date: Date }> } | null } | null };
+export type TokenQuery = { __typename?: 'Query', token?: { __typename?: 'Token', address: string, name: string, symbol: string, decimals: number, totalSupply: any, wcroPer: any, usdcPer: any, iconUrl: any, basePair?: { __typename?: 'Pair', address: string, reserve0: string, reserve1: string, token0: { __typename?: 'Token', address: string, symbol: string }, token1: { __typename?: 'Token', address: string, symbol: string }, dependentToken: { __typename?: 'Token', address: string, symbol: string }, prices: Array<{ __typename?: 'PairPrice', open: any, high: any, low: any, close: any, date: Date }>, transactions: Array<{ __typename?: 'PairTransaction', hash: string, from: string, tokenIn: string, tokenOut: string, amountIn: string, amountOut: string, date: Date }> } | null } | null };
 
 export type WalletTokensQueryVariables = Exact<{
   address: Scalars['String'];
@@ -144,6 +157,15 @@ export const TokenDocument = gql`
         high
         low
         close
+        date
+      }
+      transactions {
+        hash
+        from
+        tokenIn
+        tokenOut
+        amountIn
+        amountOut
         date
       }
     }

@@ -9,11 +9,13 @@ import {
   Table,
   TableContainer,
   Tbody,
+  Td,
   Text,
   Th,
   Thead,
   Tr,
 } from '@chakra-ui/react';
+import { format } from 'date-fns';
 import { BigNumber, ethers } from 'ethers';
 import { orderBy } from 'lodash';
 import type { NextPage } from 'next';
@@ -368,43 +370,45 @@ const Token: NextPage = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {/* {token.basePair.transactions.map((tx) => (
-                    <Tr key={tx.hash}>
-                      <Td>
-                        {token.address.toLowerCase() ===
-                        tx.tokenIn!.toLowerCase()
-                          ? 'Sell'
-                          : 'Buy'}
-                      </Td>
-                      <Td isNumeric>
-                        {token.address === tx.tokenIn
-                          ? (+ethers.utils.formatUnits(
-                              ethers.BigNumber.from(tx.amountIn),
-                              token.decimals,
-                            )).toFixed(4)
-                          : (+ethers.utils.formatUnits(
-                              ethers.BigNumber.from(tx.amountOut),
-                              token.decimals,
-                            )).toFixed(4)}
-                      </Td>
-                      <Td></Td>
-                      <Td></Td>
-                      <Td>
-                        {format(
-                          new Date(tx.date as unknown as string),
-                          'h:mm:ss aaaa',
-                        )}
-                      </Td>
-                      <Td>
-                        <a
-                          target="_blank"
-                          href={`https://cronoscan.com/tx/${tx.hash}`}
-                        >
-                          View Tx
-                        </a>
-                      </Td>
-                    </Tr>
-                  ))} */}
+                  {(token.basePair || { transactions: [] }).transactions.map(
+                    (tx) => (
+                      <Tr key={tx.hash}>
+                        <Td>
+                          {token.address.toLowerCase() ===
+                          tx.tokenIn!.toLowerCase()
+                            ? 'Sell'
+                            : 'Buy'}
+                        </Td>
+                        <Td isNumeric>
+                          {token.address === tx.tokenIn
+                            ? (+ethers.utils.formatUnits(
+                                ethers.BigNumber.from(tx.amountIn),
+                                token.decimals,
+                              )).toFixed(4)
+                            : (+ethers.utils.formatUnits(
+                                ethers.BigNumber.from(tx.amountOut),
+                                token.decimals,
+                              )).toFixed(4)}
+                        </Td>
+                        <Td></Td>
+                        <Td></Td>
+                        <Td>
+                          {format(
+                            new Date(tx.date as unknown as string),
+                            'h:mm:ss aaaa',
+                          )}
+                        </Td>
+                        <Td>
+                          <a
+                            target="_blank"
+                            href={`https://cronoscan.com/tx/${tx.hash}`}
+                          >
+                            View Tx
+                          </a>
+                        </Td>
+                      </Tr>
+                    ),
+                  )}
                 </Tbody>
               </Table>
             </TableContainer>
